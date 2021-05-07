@@ -1,7 +1,9 @@
 # screen-recording-master
 
 #### Description
-屏幕录制大师
+使用C C++实现屏幕录制
+屏幕录制大师,基于XEngine开发的一套屏幕录制软件.
+可以录制屏幕,录制声音.打包成指定格式.
 
 #### Software Architecture
 Software architecture description
