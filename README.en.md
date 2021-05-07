@@ -1,24 +1,32 @@
 # screen-recording-master
 
 #### Description
-使用C C++实现屏幕录制
-屏幕录制大师,基于XEngine开发的一套屏幕录制软件.
-可以录制屏幕,录制声音.打包成指定格式.
+use c/c++ achieve screen record master.base on XEngine Development for screen record software.can be record screen,record sound and package to Specify in format
+if you want to record system sound.you can download https://github.com/rdp/screen-capture-recorder-to-video-windows-free/releases and install your system
 
 #### Software Architecture
-Software architecture description
+base on xengine development.just application open source
 
-#### Installation
+#### compile
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+using x86 compile and support debug or release option
+
+#### run
+
+1.  download this code
+2.  open it to vs2019
+3.  choice x86 and debug or release
+4.  compile
+5.  copy files in XEngine_Bin to your compile path
+6.  run...
 
 #### Instructions
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1. set your desktop resolution
+2. set your start pos x and y,can be set 0
+3. click flush bottom and choice your sound card
+4. click start
+5. this software can be auto package when you stop
 
 #### Contribution
 
@@ -28,11 +36,10 @@ Software architecture description
 4.  Create Pull Request
 
 
-#### Gitee Feature
+#### Des
 
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1.  video use h264 codec.
+2.  audio use aac codec
+
+#### about
+you can visit www.xyry.org to learn more
