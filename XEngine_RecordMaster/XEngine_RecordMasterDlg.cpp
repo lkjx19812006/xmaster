@@ -35,6 +35,8 @@ void CXEngineRecordMasterDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON4, m_BtnSuspend);
 	DDX_Control(pDX, IDC_BUTTON5, m_BtnStop);
 	DDX_Control(pDX, IDC_STATIC_TIPS, m_StaticTips);
+	DDX_Control(pDX, IDC_EDIT5, m_EditWatermark);
+	DDX_Control(pDX, IDC_EDIT6, m_EditRate);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineRecordMasterDlg, CDialogEx)
@@ -135,20 +137,41 @@ void __stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBScreen(uint8_t* punS
 
 	if (pClass_This->bRecord)
 	{
-		int nLen = 1024 * 1024 * 10;
-		TCHAR* ptszMsgBuffer = (TCHAR*)malloc(nLen);
-		if (NULL == ptszMsgBuffer)
+		int nFLen = 1024 * 1024 * 10;
+		int nELen = 1024 * 1024 * 10;
+		TCHAR* ptszFilterBuffer = (TCHAR*)malloc(nFLen);
+		TCHAR* ptszEncodeBuffer = (TCHAR*)malloc(nELen);
+		if ((NULL == ptszFilterBuffer) || (NULL == ptszEncodeBuffer))
 		{
 			return;
 		}
-		VideoCodec_Stream_EnCodec(pClass_This->xhVideo, punStringY, punStringU, punStringV, nYLen, nULen, nVLen, (uint8_t*)ptszMsgBuffer, &nLen);
+		memset(ptszFilterBuffer, '\0', nFLen);
+		memset(ptszEncodeBuffer, '\0', nELen);
 
-		if (nLen > 0)
+		if (pClass_This->bFilter)
 		{
-			fwrite(ptszMsgBuffer, 1, nLen, pClass_This->pSt_VideoFile);
+			if (VideoCodec_Help_FilterCvt(pClass_This->xhFilter, punStringY, punStringU, punStringV, nYLen, nULen, nVLen, (uint8_t*)ptszFilterBuffer, &nFLen))
+			{
+				VideoCodec_Stream_EnCodec(pClass_This->xhVideo, (uint8_t*)ptszFilterBuffer, NULL, NULL, nFLen, 0, 0, (uint8_t*)ptszEncodeBuffer, &nELen);
+				if (nELen > 0)
+				{
+					fwrite(ptszEncodeBuffer, 1, nELen, pClass_This->pSt_VideoFile);
+				}
+			}
 		}
-		free(ptszMsgBuffer);
-		ptszMsgBuffer = NULL;
+		else
+		{
+			VideoCodec_Stream_EnCodec(pClass_This->xhVideo, punStringY, punStringU, punStringV, nYLen, nULen, nVLen, (uint8_t*)ptszEncodeBuffer, &nELen);
+			if (nELen > 0)
+			{
+				fwrite(ptszEncodeBuffer, 1, nELen, pClass_This->pSt_VideoFile);
+			}
+		}
+		free(ptszFilterBuffer);
+		free(ptszEncodeBuffer);
+
+		ptszFilterBuffer = NULL;
+		ptszEncodeBuffer = NULL;
 	}
 }
 void __stdcall CXEngineRecordMasterDlg::XEngine_AVPacket_Callback(XNETHANDLE xhNet, int nCvtType, int nCvtFrame, double dlTime, LPVOID lParam)
@@ -195,6 +218,8 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	CString m_StrEditScreen;
 	CString m_StrEditPosX;
 	CString m_StrEditPosY;
+	CString m_StrEditRate;
+	CString m_StrEditWaterMark;
 	CString m_StrComboAudio;
 	TCHAR tszFileDir[MAX_PATH];
 
@@ -202,6 +227,8 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	m_EditScreen.GetWindowText(m_StrEditScreen);
 	m_EditPosX.GetWindowText(m_StrEditPosX);
 	m_EditPosY.GetWindowText(m_StrEditPosY);
+	m_EditRate.GetWindowText(m_StrEditRate);
+	m_EditWatermark.GetWindowText(m_StrEditWaterMark);
 	m_ComboxAudioList.GetWindowText(m_StrComboAudio);
 
 	if (m_StrEditFile.IsEmpty())
@@ -245,16 +272,36 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		AfxMessageBox(_T("初始化屏幕采集失败"));
 		return;
 	}
-
 	int nWidth = 0;
 	int nHeight = 0;
 	int64_t nBitRate = 0;
 	
 	AVCollect_Screen_GetInfo(xhScreen, &nWidth, &nHeight, &nBitRate);
+	if (!m_StrEditRate.IsEmpty())
+	{
+		nBitRate = _ttoi(m_StrEditRate.GetBuffer());
+	}
 	if (!VideoCodec_Stream_EnInit(&xhVideo, nWidth, nHeight, ENUM_ENTENGINE_AVCODEC_VEDIO_TYPE_H264, nBitRate))
 	{
 		AfxMessageBox(_T("初始化失败"));
 		return;
+	}
+	if (m_StrEditWaterMark.IsEmpty())
+	{
+		bFilter = FALSE;
+	}
+	else
+	{
+		TCHAR tszFilterStr[MAX_PATH];
+		memset(tszFilterStr, '\0', MAX_PATH);
+
+		_stprintf(tszFilterStr, _T("drawtext=fontfile=Arial.ttf:fontcolor=green:fontsize=30:x=100:y=10:text='%s'"), m_StrEditWaterMark.GetBuffer());
+		if (!VideoCodec_Help_FilterInit(&xhFilter, tszFilterStr, nWidth, nHeight, ENUM_AVCOLLECT_VIDEO_FMT_YUV420P, 24))
+		{
+			AfxMessageBox(_T("初始化过滤器失败"));
+			return;
+		}
+		bFilter = TRUE;
 	}
 	_stprintf(tszVideoFile, _T("%s\\Video.h264"), tszFileDir);
 	pSt_VideoFile = _tfopen(tszVideoFile, _T("wb"));
@@ -295,6 +342,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 	AVCollect_Audio_Destory(xhSound);
 	VideoCodec_Stream_Destroy(xhVideo);
 	AudioCodec_Stream_Destroy(xhAudio);
+	VideoCodec_Help_FilterDestroy(xhFilter);
 
 	if (NULL != pSt_VideoFile)
 	{

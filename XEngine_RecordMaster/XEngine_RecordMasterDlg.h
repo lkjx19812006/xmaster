@@ -36,10 +36,12 @@ public:
 	XNETHANDLE xhSound;    //声卡录制句柄
 	XNETHANDLE xhAudio;    //音频编解码句柄
 	XNETHANDLE xhPacket;   //打包句柄
+	XNETHANDLE xhFilter;   //过滤器句柄
 	FILE* pSt_VideoFile;   //视频保存地址
 	FILE* pSt_AudioFile;   //音频保存地址
 	FILE* pSt_File;
 	BOOL bRecord;
+	BOOL bFilter;
 
 	TCHAR tszAudioFile[MAX_PATH];
 	TCHAR tszVideoFile[MAX_PATH];
@@ -66,4 +68,6 @@ public:
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton3();
 	CStatic m_StaticTips;
+	CEdit m_EditWatermark;
+	CEdit m_EditRate;
 };
