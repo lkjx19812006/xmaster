@@ -13,12 +13,14 @@ using x86 compile and support debug or release option
 
 #### run
 
-1.  download this code
-2.  open it to vs2019
-3.  choice x86 and debug or release
-4.  compile
-5.  copy files in XEngine_Bin to your compile path
-6.  run...
+1.  download xengine module file 
+2.  configure env value for xengine,XEngine_Include(header path) and XEngine_Library(module dll path)
+3.  download this code
+4.  open it to vs2019
+5.  choice x86 and debug or release
+6.  compile
+7.  copy files in XEngine_Bin to your compile path
+8.  run...
 
 #### Instructions
 
