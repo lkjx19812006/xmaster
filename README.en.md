@@ -36,10 +36,14 @@ using x86 compile and support debug or release option
 4.  Create Pull Request
 
 
-#### Des
+#### Description
 
-1.  video use h264 codec.
-2.  audio use aac codec
+1.  video used h264 codec.
+2.  audio used aac codec
+3.  default packetage as mp4 file when record complete.
+4.  The SDK we provide only contains codecs and collectors
+5.  this code not limit
+6.  if you have a question,welcome to contact us
 
 #### about
 you can visit www.xyry.org to learn more

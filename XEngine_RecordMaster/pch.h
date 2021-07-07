@@ -14,23 +14,23 @@
 #include <list>
 
 using namespace std;
-#include "../XEngine_Include/XEngine_CommHdr.h"
-#include "../XEngine_Include/BaseLib_Define.h"
-#include "../XEngine_Include/BaseLib_Error.h"
-#include "../XEngine_Include/AVCollect_Define.h"
-#include "../XEngine_Include/AVCollect_Error.h"
-#include "../XEngine_Include/AudioCoder_Define.h"
-#include "../XEngine_Include/AudioCoder_Error.h"
-#include "../XEngine_Include/AVHelp_Define.h"
-#include "../XEngine_Include/AVHelp_Error.h"
-#include "../XEngine_Include/AVPacket_Define.h"
-#include "../XEngine_Include/AVPacket_Error.h"
-#include "../XEngine_Include/VideoCoder_Define.h"
-#include "../XEngine_Include/VideoCoder_Error.h"
+#include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_AVCoder/AVCollect_Define.h>
+#include <XEngine_Include/XEngine_AVCoder/AVCollect_Error.h>
+#include <XEngine_Include/XEngine_AVCoder/AudioCoder_Define.h>
+#include <XEngine_Include/XEngine_AVCoder/AudioCoder_Error.h>
+#include <XEngine_Include/XEngine_AVCoder/AVHelp_Define.h>
+#include <XEngine_Include/XEngine_AVCoder/AVHelp_Error.h>
+#include <XEngine_Include/XEngine_AVCoder/AVPacket_Define.h>
+#include <XEngine_Include/XEngine_AVCoder/AVPacket_Error.h>
+#include <XEngine_Include/XEngine_AVCoder/VideoCoder_Define.h>
+#include <XEngine_Include/XEngine_AVCoder/VideoCoder_Error.h>
 
-#pragma comment(lib,"../XEngine_Lib/XEngine_BaseLib.lib")
-#pragma comment(lib,"../XEngine_Lib/XEngine_AudioCoder.lib")
-#pragma comment(lib,"../XEngine_Lib/XEngine_AVCollect.lib")
-#pragma comment(lib,"../XEngine_Lib/XEngine_AVPacket.lib")
-#pragma comment(lib,"../XEngine_Lib/XEngine_VideoCoder.lib")
-#pragma comment(lib,"../XEngine_Lib/XEngine_AVHelp.lib")
+#pragma comment(lib,"x86/XEngine_BaseLib/XEngine_BaseLib.lib")
+#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AudioCoder.lib")
+#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AVCollect.lib")
+#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AVPacket.lib")
+#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_VideoCoder.lib")
+#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AVHelp.lib")
