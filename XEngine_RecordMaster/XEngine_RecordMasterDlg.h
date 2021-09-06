@@ -70,4 +70,5 @@ public:
 	CStatic m_StaticTips;
 	CEdit m_EditWatermark;
 	CEdit m_EditRate;
+	CEdit m_EditFrameRate;
 };

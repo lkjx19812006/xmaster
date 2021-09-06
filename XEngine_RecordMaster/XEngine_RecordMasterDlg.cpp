@@ -37,6 +37,7 @@ void CXEngineRecordMasterDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_TIPS, m_StaticTips);
 	DDX_Control(pDX, IDC_EDIT5, m_EditWatermark);
 	DDX_Control(pDX, IDC_EDIT6, m_EditRate);
+	DDX_Control(pDX, IDC_EDIT7, m_EditFrameRate);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineRecordMasterDlg, CDialogEx)
@@ -64,6 +65,7 @@ BOOL CXEngineRecordMasterDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	m_EditPosX.SetWindowText(_T("0"));
 	m_EditPosY.SetWindowText(_T("0"));
+	m_EditFrameRate.SetWindowText(_T("24"));
 	m_EditScreen.SetWindowText(_T("1920x1080"));
 
 	memset(tszVideoFile, '\0', MAX_PATH);
@@ -219,6 +221,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	CString m_StrEditPosX;
 	CString m_StrEditPosY;
 	CString m_StrEditRate;
+	CString m_StrEditFrame;
 	CString m_StrEditWaterMark;
 	CString m_StrComboAudio;
 	TCHAR tszFileDir[MAX_PATH];
@@ -228,6 +231,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	m_EditPosX.GetWindowText(m_StrEditPosX);
 	m_EditPosY.GetWindowText(m_StrEditPosY);
 	m_EditRate.GetWindowText(m_StrEditRate);
+	m_EditFrameRate.GetWindowText(m_StrEditFrame);
 	m_EditWatermark.GetWindowText(m_StrEditWaterMark);
 	m_ComboxAudioList.GetWindowText(m_StrComboAudio);
 
@@ -267,7 +271,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		}
 	}
 	//屏幕配置
-	if (!AVCollect_Screen_Init(&xhScreen, XEngine_AVCollect_CBScreen, this, m_StrEditScreen.GetBuffer(), _ttoi(m_StrEditPosX.GetBuffer()), _ttoi(m_StrEditPosY.GetBuffer()), 24))
+	if (!AVCollect_Screen_Init(&xhScreen, XEngine_AVCollect_CBScreen, this, m_StrEditScreen.GetBuffer(), _ttoi(m_StrEditPosX.GetBuffer()), _ttoi(m_StrEditPosY.GetBuffer()), _ttoi(m_StrEditFrame.GetBuffer())))
 	{
 		AfxMessageBox(_T("初始化屏幕采集失败"));
 		return;
@@ -277,7 +281,12 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	int64_t nBitRate = 0;
 	
 	AVCollect_Screen_GetInfo(xhScreen, &nWidth, &nHeight, &nBitRate);
-	if (!m_StrEditRate.IsEmpty())
+	if (m_StrEditRate.IsEmpty())
+	{
+		m_StrEditRate.Format(_T("%lld"), nBitRate);
+		m_EditRate.SetWindowText(m_StrEditRate);
+	}
+	else
 	{
 		nBitRate = _ttoi(m_StrEditRate.GetBuffer());
 	}
@@ -414,12 +423,13 @@ void CXEngineRecordMasterDlg::OnBnClickedButton3()
 	st_FileDir.lpstrFilter = _T("mp4 视频文件(*.mp4)\0*.mp4\0所有文件(*.*)\0*.*\0"); 
 	st_FileDir.nFilterIndex = 1;                        //指定当前过滤器索引,2即是所有文件
 	st_FileDir.Flags = OFN_FILEMUSTEXIST   //指定用户仅可以在文件名登录字段中输入已存在的文件的名字。
-		| OFN_EXPLORER              //指出任何打开或另存为对话框使用新的Explorer风格的用户化模块。
-		| OFN_HIDEREADONLY          //隐藏只读复选框
-		| OFN_OVERWRITEPROMPT;      //提醒用户否复盖这个文件。
+		| OFN_EXPLORER                     //指出任何打开或另存为对话框使用新的Explorer风格的用户化模块。
+		| OFN_HIDEREADONLY                 //隐藏只读复选框
+		| OFN_OVERWRITEPROMPT;             //提醒用户否复盖这个文件。
 	
-	
-	GetSaveFileName(&st_FileDir);
-	_tcscat(tszDir, _T(".mp4"));
-	m_EditSaveFile.SetWindowText(tszDir);
+	if (GetSaveFileName(&st_FileDir))
+	{
+		_tcscat(tszDir, _T(".mp4"));
+		m_EditSaveFile.SetWindowText(tszDir);
+	}
 }
