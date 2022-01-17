@@ -21,12 +21,12 @@ using namespace std;
 #include <XEngine_Include/XEngine_AVCoder/AVCollect_Error.h>
 #include <XEngine_Include/XEngine_AVCoder/AudioCoder_Define.h>
 #include <XEngine_Include/XEngine_AVCoder/AudioCoder_Error.h>
+#include <XEngine_Include/XEngine_AVCoder/VideoCoder_Define.h>
+#include <XEngine_Include/XEngine_AVCoder/VideoCoder_Error.h>
 #include <XEngine_Include/XEngine_AVCoder/AVHelp_Define.h>
 #include <XEngine_Include/XEngine_AVCoder/AVHelp_Error.h>
 #include <XEngine_Include/XEngine_AVCoder/AVPacket_Define.h>
 #include <XEngine_Include/XEngine_AVCoder/AVPacket_Error.h>
-#include <XEngine_Include/XEngine_AVCoder/VideoCoder_Define.h>
-#include <XEngine_Include/XEngine_AVCoder/VideoCoder_Error.h>
 
 #pragma comment(lib,"x86/XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AudioCoder.lib")

@@ -125,7 +125,7 @@ void _stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBAudio(uint8_t* punStr
 		for (int i = 0; i < nListCount; i++)
 		{
 			BYTE byAACHdr[8];
-			AVHelp_MetaInfo_AACPacket(byAACHdr, pClass_This->nSmpRate, pClass_This->nChannel, ppSt_ListMsgBuffer[i]->nMsgLen);
+			AVHelp_Packet_AACHdr(byAACHdr, pClass_This->nSmpRate, pClass_This->nChannel, ppSt_ListMsgBuffer[i]->nMsgLen);
 
 			fwrite(byAACHdr, 1, 7, pClass_This->pSt_AudioFile);
 			fwrite(ppSt_ListMsgBuffer[i]->pbyMsgBuffer, 1, ppSt_ListMsgBuffer[i]->nMsgLen, pClass_This->pSt_AudioFile);
