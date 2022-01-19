@@ -252,10 +252,9 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 
 	if (m_StrEditFile.IsEmpty() && m_StrSMSUrl.IsEmpty())
 	{
-		AfxMessageBox(_T("必须输入保存地址"));
+		AfxMessageBox(_T("必须有保存地址或者有推流地址"));
 		return;
 	}
-	
 	//音频配置
 	if (m_ComboxAudioList.GetCurSel() >= 0)
 	{
@@ -372,7 +371,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	m_BtnSuspend.EnableWindow(TRUE);
 	m_BtnStop.EnableWindow(TRUE);
 
-	m_StaticTips.SetWindowText(_T("提示:正在录制..."));
+	m_StaticTips.SetWindowText(_T("提示:正在推流或录制..."));
 }
 
 
@@ -443,6 +442,14 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 		}
 		HANDLE hThread = CreateThread(NULL, 0, XEngine_AVPacket_Thread, this, 0, NULL);
 		CloseHandle(hThread);
+	}
+	else
+	{
+		m_BtnStart.EnableWindow(TRUE);
+		m_BtnSuspend.EnableWindow(FALSE);
+		m_BtnStop.EnableWindow(FALSE);
+		m_BtnStart.SetWindowText(_T("开始录制"));
+		m_StaticTips.SetWindowText(_T("提示:停止推流..."));
 	}
 }
 
