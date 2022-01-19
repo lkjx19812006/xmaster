@@ -1,10 +1,10 @@
-copy /y "%XEngine_Library%\x86\XEngine_BaseLib\XEngine_BaseLib.dll" "./"
-copy /y "%XEngine_Library%\x86\XEngine_AVCoder\XEngine_VideoCoder.dll" "./"
-copy /y "%XEngine_Library%\x86\XEngine_AVCoder\XEngine_AudioCoder.dll" "./"
-copy /y "%XEngine_Library%\x86\XEngine_AVCoder\XEngine_AVCollect.dll" "./"
-copy /y "%XEngine_Library%\x86\XEngine_AVCoder\XEngine_AVHelp.dll" "./"
-copy /y "%XEngine_Library%\x86\XEngine_AVCoder\XEngine_AVPacket.dll" "./"
-copy /y "%XEngine_Library%\x86\XEngine_StreamMedia\StreamMedia_XClient.dll" "./
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\XEngine_BaseLib.dll" "./"
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\XEngine_VideoCoder.dll" "./"
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\XEngine_AudioCoder.dll" "./"
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\XEngine_AVCollect.dll" "./"
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\XEngine_AVHelp.dll" "./"
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\XEngine_AVPacket.dll" "./
+copy /y "D:\XEngine\XEngine_SourceCode\Debug\StreamMedia_XClient.dll" "./
 
 copy /y "%XEngine_Library%\x86\XEngine_LibEx\AVCodec\avcodec-58.dll" "./"
 copy /y "%XEngine_Library%\x86\XEngine_LibEx\AVCodec\avdevice-58.dll" "./"

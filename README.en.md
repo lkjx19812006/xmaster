@@ -1,7 +1,7 @@
 # screen-recording-master
 
 #### Description
-use c/c++ achieve screen record master.base on XEngine Development for screen record software.can be record screen,record sound and package to Specify in format
+use c/c++ achieve screen record master.base on XEngine Development for screen record software.can be record screen,record sound and package to Specify in format,and can be push desktop to stream server  
 if you want to record system sound.you can download https://github.com/rdp/screen-capture-recorder-to-video-windows-free/releases and install your system
 
 #### Software Architecture
@@ -14,7 +14,7 @@ using x86 compile and support debug or release option
 #### run
 
 1.  download xengine module file 
-2.  configure env value for xengine,XEngine_Include(header path) and XEngine_Library(module dll path)
+2.  configure env 
 3.  download this code
 4.  open it to vs2019
 5.  choice x86 and debug or release
