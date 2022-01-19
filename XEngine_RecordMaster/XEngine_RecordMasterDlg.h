@@ -71,4 +71,10 @@ public:
 	CEdit m_EditWatermark;
 	CEdit m_EditRate;
 	CEdit m_EditFrameRate;
+	CButton m_BtnCheckPush;
+	CEdit m_EditPushAddr;
+	afx_msg void OnBnClickedCheck1();
+	afx_msg void OnBnClickedCheck2();
+	CButton m_BtnCheckSave;
+	XNETHANDLE xhStream;
 };

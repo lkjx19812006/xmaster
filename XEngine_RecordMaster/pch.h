@@ -15,6 +15,7 @@
 
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_AVCoder/AVCollect_Define.h>
@@ -27,10 +28,13 @@ using namespace std;
 #include <XEngine_Include/XEngine_AVCoder/AVHelp_Error.h>
 #include <XEngine_Include/XEngine_AVCoder/AVPacket_Define.h>
 #include <XEngine_Include/XEngine_AVCoder/AVPacket_Error.h>
+#include <XEngine_Include/XEngine_StreamMedia/XClient_Define.h>
+#include <XEngine_Include/XEngine_StreamMedia/XClient_Error.h>
 
-#pragma comment(lib,"x86/XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AudioCoder.lib")
-#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AVCollect.lib")
-#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AVPacket.lib")
-#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_VideoCoder.lib")
-#pragma comment(lib,"x86/XEngine_AVCoder/XEngine_AVHelp.lib")
+#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
+#pragma comment(lib,"XEngine_AVCoder/XEngine_AudioCoder.lib")
+#pragma comment(lib,"XEngine_AVCoder/XEngine_AVCollect.lib")
+#pragma comment(lib,"XEngine_AVCoder/XEngine_AVPacket.lib")
+#pragma comment(lib,"XEngine_AVCoder/XEngine_VideoCoder.lib")
+#pragma comment(lib,"XEngine_AVCoder/XEngine_AVHelp.lib")
+#pragma comment(lib,"XEngine_StreamMedia/StreamMedia_XClient.lib")
