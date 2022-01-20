@@ -38,7 +38,7 @@ using x86 compile and support debug or release option
 4.  Create Pull Request
 
 #### test stream media server
-Push Address:rtpm://app.xyry.org/live/you code,example rtpm://app.xyry.org/live/qyt
+Push Address:rtpm://app.xyry.org/live/you code,example rtpm://app.xyry.org/live/qyt  
 Pull Address:http://app.xyry.org:8088/live/you code.flv,example http://app.xyry.org:8088/live/qyt.flv
 
 #### Description

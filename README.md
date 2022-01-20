@@ -37,7 +37,7 @@
 4.  新建 Pull Request
 
 #### 测试流媒体服务
-推流:rtpm://app.xyry.org/live/你的识别码,比如 rtpm://app.xyry.org/live/qyt
+推流:rtpm://app.xyry.org/live/你的识别码,比如 rtpm://app.xyry.org/live/qyt  
 拉流:http://app.xyry.org:8088/live/你的识别码.flv 比如 http://app.xyry.org:8088/live/qyt.flv
 
 #### 其他说明
