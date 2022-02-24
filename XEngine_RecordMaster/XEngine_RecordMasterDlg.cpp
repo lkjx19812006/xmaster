@@ -41,6 +41,7 @@ void CXEngineRecordMasterDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK1, m_BtnCheckPush);
 	DDX_Control(pDX, IDC_EDIT8, m_EditPushAddr);
 	DDX_Control(pDX, IDC_CHECK2, m_BtnCheckSave);
+	DDX_Control(pDX, IDC_CHECK3, m_BtnCheckAudio);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineRecordMasterDlg, CDialogEx)
@@ -235,6 +236,10 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	CString m_StrComboAudio;
 	CString m_StrSMSUrl;
 	
+	int nWidth = 0;
+	int nHeight = 0;
+	int64_t nBitRate = 0;
+
 	TCHAR tszFileDir[MAX_PATH];
 	XENGINE_PROTOCOL_AVINFO st_AVProtocol;
 
@@ -255,16 +260,16 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		AfxMessageBox(_T("必须有保存地址或者有推流地址"));
 		return;
 	}
+
+	if (BST_CHECKED == m_BtnCheckAudio.GetCheck() && m_ComboxAudioList.GetCurSel() <= 0)
+	{
+		AfxMessageBox(_T("没有起作用的启动!"));
+		return;
+	}
 	//音频配置
 	if (m_ComboxAudioList.GetCurSel() >= 0)
 	{
 		bRecord = TRUE;
-		memset(tszFileDir, '\0', MAX_PATH);
-		//获得路径名
-		BaseLib_OperatorString_GetFileAndPath(m_StrEditFile.GetBuffer(), tszFileDir);
-
-		_stprintf(tszAudioFile, _T("%s\\Audio.aac"), tszFileDir);
-		pSt_AudioFile = _tfopen(tszAudioFile, _T("wb"));
 		//选择后才启用
 		if (!AVCollect_Audio_Init(&xhSound, m_StrComboAudio.GetBuffer(), XEngine_AVCollect_CBAudio, this))
 		{
@@ -299,30 +304,40 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 			st_AVProtocol.st_PushAudio.nSampleFmt = ENUM_AVCOLLECT_AUDIO_SAMPLE_FMT_FLTP;
 			st_AVProtocol.st_PushAudio.nSampleRate = nSmpRate;
 		}
+		//是否需要保存为文件
+		if (BST_CHECKED == m_BtnCheckSave.GetCheck())
+		{
+
+			memset(tszFileDir, '\0', MAX_PATH);
+			//获得路径名
+			BaseLib_OperatorString_GetFileAndPath(m_StrEditFile.GetBuffer(), tszFileDir);
+
+			_stprintf(tszAudioFile, _T("%s\\Audio.aac"), tszFileDir);
+			pSt_AudioFile = _tfopen(tszAudioFile, _T("wb"));
+		}
+		AVCollect_Audio_Start(xhSound);
 	}
-	//屏幕配置
-	if (!AVCollect_Screen_Init(&xhScreen, XEngine_AVCollect_CBScreen, this, m_StrEditScreen.GetBuffer(), _ttoi(m_StrEditPosX.GetBuffer()), _ttoi(m_StrEditPosY.GetBuffer()), _ttoi(m_StrEditFrame.GetBuffer())))
+	//是否只是保存音频
+	if (BST_CHECKED != m_BtnCheckAudio.GetCheck())
 	{
-		AfxMessageBox(_T("初始化屏幕采集失败"));
-		return;
-	}
-	int nWidth = 0;
-	int nHeight = 0;
-	int64_t nBitRate = 0;
-	
-	AVCollect_Screen_GetInfo(xhScreen, &nWidth, &nHeight, &nBitRate);
-	if (m_StrEditRate.IsEmpty())
-	{
-		m_StrEditRate.Format(_T("%lld"), nBitRate);
-		m_EditRate.SetWindowText(m_StrEditRate);
-	}
-	else
-	{
-		nBitRate = _ttoi(m_StrEditRate.GetBuffer());
-	}
-	//是否需要保存
-	if (BST_CHECKED == m_BtnCheckSave.GetCheck())
-	{
+		bRecord = TRUE;
+		//屏幕采集
+		if (!AVCollect_Screen_Init(&xhScreen, XEngine_AVCollect_CBScreen, this, m_StrEditScreen.GetBuffer(), _ttoi(m_StrEditPosX.GetBuffer()), _ttoi(m_StrEditPosY.GetBuffer()), _ttoi(m_StrEditFrame.GetBuffer())))
+		{
+			AfxMessageBox(_T("初始化屏幕采集失败"));
+			return;
+		}
+		AVCollect_Screen_GetInfo(xhScreen, &nWidth, &nHeight, &nBitRate);
+		if (m_StrEditRate.IsEmpty())
+		{
+			m_StrEditRate.Format(_T("%lld"), nBitRate);
+			m_EditRate.SetWindowText(m_StrEditRate);
+		}
+		else
+		{
+			nBitRate = _ttoi(m_StrEditRate.GetBuffer());
+		}
+		//视频编码
 		if (!VideoCodec_Stream_EnInit(&xhVideo, nWidth, nHeight, ENUM_ENTENGINE_AVCODEC_VEDIO_TYPE_H264, nBitRate))
 		{
 			AfxMessageBox(_T("初始化失败"));
@@ -345,8 +360,13 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 			}
 			bFilter = TRUE;
 		}
-		_stprintf(tszVideoFile, _T("%s\\Video.h264"), tszFileDir);
-		pSt_VideoFile = _tfopen(tszVideoFile, _T("wb"));
+		//是否需要保存为文件
+		if (BST_CHECKED == m_BtnCheckSave.GetCheck())
+		{
+			_stprintf(tszVideoFile, _T("%s\\Video.h264"), tszFileDir);
+			pSt_VideoFile = _tfopen(tszVideoFile, _T("wb"));
+		}
+		AVCollect_Screen_Start(xhScreen);
 	}
 	//是否需要推流
 	if (BST_CHECKED == m_BtnCheckPush.GetCheck())
@@ -364,9 +384,6 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 			return;
 		}
 	}
-	AVCollect_Screen_Start(xhScreen);
-	AVCollect_Audio_Start(xhSound);
-
 	m_BtnStart.EnableWindow(FALSE);
 	m_BtnSuspend.EnableWindow(TRUE);
 	m_BtnStop.EnableWindow(TRUE);
@@ -413,7 +430,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 	}
 
 	//是否需要打包
-	if (_tcslen(tszVideoFile) > 0)
+	if (BST_CHECKED == m_BtnCheckSave.GetCheck())
 	{
 		double dlVideoTime = 0;
 		double dlAudioTime = 0;
@@ -423,11 +440,20 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 			AfxMessageBox(_T("初始化打包工具失败"));
 			return;
 		}
-		AVPacket_FilePacket_Input(xhPacket, tszVideoFile, &dlVideoTime);
-		if (_tcslen(tszAudioFile) > 0)
+		
+		if (BST_CHECKED == m_BtnCheckAudio.GetCheck())
 		{
 			AVPacket_FilePacket_Input(xhPacket, tszAudioFile, &dlAudioTime);
 		}
+		else
+		{
+			if (_tcslen(tszAudioFile) > 0)
+			{
+				AVPacket_FilePacket_Input(xhPacket, tszAudioFile, &dlAudioTime);
+			}
+			AVPacket_FilePacket_Input(xhPacket, tszVideoFile, &dlVideoTime);
+		}
+
 		CString m_StrFile;
 		m_EditSaveFile.GetWindowText(m_StrFile);
 		if (!AVPacket_FilePacket_Output(xhPacket, m_StrFile))
@@ -471,27 +497,21 @@ void CXEngineRecordMasterDlg::OnBnClickedButton4()
 void CXEngineRecordMasterDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	TCHAR tszDir[MAX_PATH];
-	memset(tszDir, '\0', MAX_PATH);
-
-	OPENFILENAME st_FileDir;  
-	memset(&st_FileDir, '\0', sizeof(OPENFILENAME));
-
-	st_FileDir.lStructSize = sizeof(OPENFILENAME);
-	st_FileDir.hwndOwner = this->m_hWnd;                 
-	st_FileDir.lpstrFile = tszDir;                      //返回的文件路径
-	st_FileDir.nMaxFile = MAX_PATH;
-	st_FileDir.lpstrFilter = _T("mp4 视频文件(*.mp4)\0*.mp4\0所有文件(*.*)\0*.*\0"); 
-	st_FileDir.nFilterIndex = 1;                        //指定当前过滤器索引,2即是所有文件
-	st_FileDir.Flags = OFN_FILEMUSTEXIST   //指定用户仅可以在文件名登录字段中输入已存在的文件的名字。
-		| OFN_EXPLORER                     //指出任何打开或另存为对话框使用新的Explorer风格的用户化模块。
-		| OFN_HIDEREADONLY                 //隐藏只读复选框
-		| OFN_OVERWRITEPROMPT;             //提醒用户否复盖这个文件。
-	
-	if (GetSaveFileName(&st_FileDir))
+	CFileDialog m_FileDlg(FALSE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("mp4 视频文件(*.mp4)|*.mp4|aac 音频(*.aac)|*.aac|所有文件(*.*)|*.*||"), NULL);
+	if (IDOK == m_FileDlg.DoModal())
 	{
-		_tcscat(tszDir, _T(".mp4"));
-		m_EditSaveFile.SetWindowText(tszDir);
+		CString m_StrFile;
+		m_StrFile = m_FileDlg.GetPathName();
+
+		if (m_FileDlg.m_ofn.nFilterIndex == 1)
+		{
+			m_StrFile += _T(".mp4");
+		}
+		else if (m_FileDlg.m_ofn.nFilterIndex == 2)
+		{
+			m_StrFile += _T(".aac");
+		}
+		m_EditSaveFile.SetWindowText(m_StrFile);
 	}
 }
 
