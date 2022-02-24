@@ -395,6 +395,8 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 void CXEngineRecordMasterDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	m_ComboxAudioList.ResetContent();
+
 	int nACount = 0;
 	int nVCount = 0;
 	AVHELP_DEVICEINFO** ppSt_AudioList;
