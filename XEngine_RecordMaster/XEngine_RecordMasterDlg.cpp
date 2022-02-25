@@ -261,7 +261,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		return;
 	}
 
-	if (BST_CHECKED == m_BtnCheckAudio.GetCheck() && m_ComboxAudioList.GetCurSel() <= 0)
+	if (BST_CHECKED == m_BtnCheckAudio.GetCheck() && m_ComboxAudioList.GetCurSel() < 0)
 	{
 		AfxMessageBox(_T("没有起作用的启动!"));
 		return;
@@ -307,7 +307,6 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		//是否需要保存为文件
 		if (BST_CHECKED == m_BtnCheckSave.GetCheck())
 		{
-
 			memset(tszFileDir, '\0', MAX_PATH);
 			//获得路径名
 			BaseLib_OperatorString_GetFileAndPath(m_StrEditFile.GetBuffer(), tszFileDir);
@@ -363,6 +362,10 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		//是否需要保存为文件
 		if (BST_CHECKED == m_BtnCheckSave.GetCheck())
 		{
+			memset(tszFileDir, '\0', MAX_PATH);
+			//获得路径名
+			BaseLib_OperatorString_GetFileAndPath(m_StrEditFile.GetBuffer(), tszFileDir);
+
 			_stprintf(tszVideoFile, _T("%s\\Video.h264"), tszFileDir);
 			pSt_VideoFile = _tfopen(tszVideoFile, _T("wb"));
 		}
@@ -434,42 +437,47 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 	//是否需要打包
 	if (BST_CHECKED == m_BtnCheckSave.GetCheck())
 	{
-		double dlVideoTime = 0;
-		double dlAudioTime = 0;
-		m_StaticTips.SetWindowText(_T("提示:正在打包..."));
-		if (!AVPacket_FilePacket_Init(&xhPacket, XEngine_AVPacket_Callback, this))
-		{
-			AfxMessageBox(_T("初始化打包工具失败"));
-			return;
-		}
-		
+		CString m_StrFile;
+		m_EditSaveFile.GetWindowText(m_StrFile);
+
 		if (BST_CHECKED == m_BtnCheckAudio.GetCheck())
 		{
-			AVPacket_FilePacket_Input(xhPacket, tszAudioFile, &dlAudioTime);
+			m_BtnStart.EnableWindow(TRUE);
+			m_BtnSuspend.EnableWindow(FALSE);
+			m_BtnStop.EnableWindow(FALSE);
+			m_BtnStart.SetWindowText(_T("开始录制"));
+			m_StaticTips.SetWindowText(_T("提示:停止推流..."));
 		}
 		else
 		{
+			double dlVideoTime = 0;
+			double dlAudioTime = 0;
+			m_StaticTips.SetWindowText(_T("提示:正在打包..."));
+			if (!AVPacket_FilePacket_Init(&xhPacket, XEngine_AVPacket_Callback, this))
+			{
+				AfxMessageBox(_T("初始化打包工具失败"));
+				return;
+			}
+
 			if (_tcslen(tszAudioFile) > 0)
 			{
 				AVPacket_FilePacket_Input(xhPacket, tszAudioFile, &dlAudioTime);
 			}
 			AVPacket_FilePacket_Input(xhPacket, tszVideoFile, &dlVideoTime);
-		}
 
-		CString m_StrFile;
-		m_EditSaveFile.GetWindowText(m_StrFile);
-		if (!AVPacket_FilePacket_Output(xhPacket, m_StrFile))
-		{
-			AfxMessageBox(_T("设置输出失败"));
-			return;
+			if (!AVPacket_FilePacket_Output(xhPacket, m_StrFile))
+			{
+				AfxMessageBox(_T("设置输出失败"));
+				return;
+			}
+			if (!AVPacket_FilePacket_Start(xhPacket))
+			{
+				AfxMessageBox(_T("开始打包失败"));
+				return;
+			}
+			HANDLE hThread = CreateThread(NULL, 0, XEngine_AVPacket_Thread, this, 0, NULL);
+			CloseHandle(hThread);
 		}
-		if (!AVPacket_FilePacket_Start(xhPacket))
-		{
-			AfxMessageBox(_T("开始打包失败"));
-			return;
-		}
-		HANDLE hThread = CreateThread(NULL, 0, XEngine_AVPacket_Thread, this, 0, NULL);
-		CloseHandle(hThread);
 	}
 	else
 	{
