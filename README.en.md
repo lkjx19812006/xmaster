@@ -5,18 +5,20 @@ use c/c++ achieve screen record master.base on XEngine Development for screen re
 if you want to record system sound.you can download https://github.com/rdp/screen-capture-recorder-to-video-windows-free/releases and install your system
 
 #### Software Architecture
-base on xengine development.just application open source
+base on xengine development.just application open source  
+This program requires the following libraries to use  
+XEngine:https://gitee.com/xyry/libxengine or https://github.com/libxengine/xengine  
 
 #### compile
 
-using x86 compile and support debug or release option
+using x86 and x64 compile and support debug or release option
 
 #### run
 
 1.  download xengine module file 
 2.  configure env 
 3.  download this code
-4.  open it to vs2019
+4.  open it to vs
 5.  choice x86 and debug or release
 6.  compile
 7.  copy files in XEngine_Bin to your compile path
