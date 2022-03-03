@@ -123,7 +123,7 @@ void _stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBAudio(uint8_t* punStr
 {
 	CXEngineRecordMasterDlg* pClass_This = (CXEngineRecordMasterDlg*)lParam;
 
-	if (pClass_This->bRecord)
+	if (BST_CHECKED == pClass_This->m_BtnCheckSave.GetCheck() && pClass_This->m_ComboxAudioList.GetCurSel() > 0)
 	{
 		int nListCount = 0;
 		AVCODEC_AUDIO_MSGBUFFER** ppSt_ListMsgBuffer;
@@ -143,7 +143,7 @@ void __stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBScreen(uint8_t* punS
 {
 	CXEngineRecordMasterDlg* pClass_This = (CXEngineRecordMasterDlg*)lParam;
 
-	if (pClass_This->bRecord)
+	if (BST_CHECKED == pClass_This->m_BtnCheckSave.GetCheck())
 	{
 		int nFLen = 1024 * 1024 * 10;
 		int nELen = 1024 * 1024 * 10;
@@ -181,7 +181,7 @@ void __stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBScreen(uint8_t* punS
 		ptszFilterBuffer = NULL;
 		ptszEncodeBuffer = NULL;
 	}
-	else
+	if (BST_CHECKED == pClass_This->m_BtnCheckPush.GetCheck())
 	{
 		XClient_StreamPush_PushVideo(pClass_This->xhStream, punStringY, nYLen, punStringU, nULen, punStringV, nVLen);
 	}
@@ -269,7 +269,6 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	//音频配置
 	if (m_ComboxAudioList.GetCurSel() >= 0)
 	{
-		bRecord = TRUE;
 		//选择后才启用
 		if (!AVCollect_Audio_Init(&xhSound, m_StrComboAudio.GetBuffer(), XEngine_AVCollect_CBAudio, this))
 		{
@@ -319,7 +318,6 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	//是否只是保存音频
 	if (BST_CHECKED != m_BtnCheckAudio.GetCheck())
 	{
-		bRecord = TRUE;
 		//屏幕采集
 		if (!AVCollect_Screen_Init(&xhScreen, XEngine_AVCollect_CBScreen, this, m_StrEditScreen.GetBuffer(), _ttoi(m_StrEditPosX.GetBuffer()), _ttoi(m_StrEditPosY.GetBuffer()), _ttoi(m_StrEditFrame.GetBuffer())))
 		{
@@ -493,8 +491,6 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 void CXEngineRecordMasterDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	bRecord = FALSE;
-
 	m_BtnStart.EnableWindow(TRUE);
 	m_BtnSuspend.EnableWindow(FALSE);
 	m_BtnStop.EnableWindow(TRUE);
