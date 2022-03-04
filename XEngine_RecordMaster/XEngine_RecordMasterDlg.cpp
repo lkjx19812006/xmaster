@@ -123,7 +123,7 @@ void _stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBAudio(uint8_t* punStr
 {
 	CXEngineRecordMasterDlg* pClass_This = (CXEngineRecordMasterDlg*)lParam;
 
-	if (BST_CHECKED == pClass_This->m_BtnCheckSave.GetCheck() && pClass_This->m_ComboxAudioList.GetCurSel() > 0)
+	if (pClass_This->bFileSave && pClass_This->m_ComboxAudioList.GetCurSel() > 0)
 	{
 		int nListCount = 0;
 		AVCODEC_AUDIO_MSGBUFFER** ppSt_ListMsgBuffer;
@@ -138,12 +138,16 @@ void _stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBAudio(uint8_t* punStr
 		}
 		BaseLib_OperatorMemory_Free((void***)&ppSt_ListMsgBuffer, nListCount);
 	}
+	if (pClass_This->bStreamPush)
+	{
+		XClient_StreamPush_PushAudio(pClass_This->xhStream, punStringAudio, nVLen);
+	}
 }
 void __stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBScreen(uint8_t* punStringY, int nYLen, uint8_t* punStringU, int nULen, uint8_t* punStringV, int nVLen, LPVOID lParam)
 {
 	CXEngineRecordMasterDlg* pClass_This = (CXEngineRecordMasterDlg*)lParam;
 
-	if (BST_CHECKED == pClass_This->m_BtnCheckSave.GetCheck())
+	if (pClass_This->bFileSave)
 	{
 		int nFLen = 1024 * 1024 * 10;
 		int nELen = 1024 * 1024 * 10;
@@ -181,7 +185,7 @@ void __stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBScreen(uint8_t* punS
 		ptszFilterBuffer = NULL;
 		ptszEncodeBuffer = NULL;
 	}
-	if (BST_CHECKED == pClass_This->m_BtnCheckPush.GetCheck())
+	if (pClass_This->bStreamPush)
 	{
 		XClient_StreamPush_PushVideo(pClass_This->xhStream, punStringY, nYLen, punStringU, nULen, punStringV, nVLen);
 	}
@@ -261,6 +265,16 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		return;
 	}
 
+	bFileSave = FALSE;
+	bStreamPush = FALSE;
+	if (BST_CHECKED == m_BtnCheckSave.GetCheck())
+	{
+		bFileSave = TRUE;
+	}
+	if (BST_CHECKED == m_BtnCheckPush.GetCheck())
+	{
+		bStreamPush = TRUE;
+	}
 	if (BST_CHECKED == m_BtnCheckAudio.GetCheck() && m_ComboxAudioList.GetCurSel() < 0)
 	{
 		AfxMessageBox(_T("没有起作用的启动!"));
@@ -358,7 +372,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 			bFilter = TRUE;
 		}
 		//是否需要保存为文件
-		if (BST_CHECKED == m_BtnCheckSave.GetCheck())
+		if (bFileSave)
 		{
 			memset(tszFileDir, '\0', MAX_PATH);
 			//获得路径名
@@ -368,17 +382,17 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 			pSt_VideoFile = _tfopen(tszVideoFile, _T("wb"));
 		}
 		AVCollect_Screen_Start(xhScreen);
-	}
-	//是否需要推流
-	if (BST_CHECKED == m_BtnCheckPush.GetCheck())
-	{
+
 		st_AVProtocol.st_PushVideo.bEnable = TRUE;
 		st_AVProtocol.st_PushVideo.enAvCodec = ENUM_ENTENGINE_AVCODEC_VEDIO_TYPE_H264;
 		st_AVProtocol.st_PushVideo.nBitRate = nBitRate;
 		st_AVProtocol.st_PushVideo.nFrameRate = 24;
 		st_AVProtocol.st_PushVideo.nHeight = nHeight;
 		st_AVProtocol.st_PushVideo.nWidth = nWidth;
-		
+	}
+	//是否需要推流
+	if (bStreamPush)
+	{
 		if (!XClient_StreamPush_Init(&xhStream, m_StrSMSUrl.GetBuffer(), &st_AVProtocol, "flv"))
 		{
 			AfxMessageBox(_T("推送初始化失败,无法继续"));
@@ -420,8 +434,8 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 	AVCollect_Audio_Destory(xhSound);
 	VideoCodec_Stream_Destroy(xhVideo);
 	AudioCodec_Stream_Destroy(xhAudio);
-	VideoCodec_Help_FilterDestroy(xhFilter);
 	XClient_StreamPush_Close(xhStream);
+	VideoCodec_Help_FilterDestroy(xhFilter);
 
 	if (NULL != pSt_VideoFile)
 	{
@@ -433,7 +447,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 	}
 
 	//是否需要打包
-	if (BST_CHECKED == m_BtnCheckSave.GetCheck())
+	if (bFileSave)
 	{
 		CString m_StrFile;
 		m_EditSaveFile.GetWindowText(m_StrFile);

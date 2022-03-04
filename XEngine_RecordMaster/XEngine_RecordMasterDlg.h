@@ -41,6 +41,8 @@ public:
 	FILE* pSt_AudioFile;   //音频保存地址
 	FILE* pSt_File;
 	BOOL bFilter;
+	BOOL bFileSave;
+	BOOL bStreamPush;
 
 	TCHAR tszAudioFile[MAX_PATH];
 	TCHAR tszVideoFile[MAX_PATH];
