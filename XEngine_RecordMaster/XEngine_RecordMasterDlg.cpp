@@ -333,12 +333,19 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	if (BST_CHECKED != m_BtnCheckAudio.GetCheck())
 	{
 		//屏幕采集
-		if (!AVCollect_Screen_Init(&xhScreen, XEngine_AVCollect_CBScreen, this, m_StrEditScreen.GetBuffer(), _ttoi(m_StrEditPosX.GetBuffer()), _ttoi(m_StrEditPosY.GetBuffer()), _ttoi(m_StrEditFrame.GetBuffer())))
+		AVCOLLECT_SCREENINFO st_AVScreen;
+		memset(&st_AVScreen, '\0', sizeof(AVCOLLECT_SCREENINFO));
+
+		st_AVScreen.nFrameRate = _ttoi(m_StrEditFrame.GetBuffer());
+		st_AVScreen.nPosX = _ttoi(m_StrEditPosX.GetBuffer());
+		st_AVScreen.nPosY = _ttoi(m_StrEditPosY.GetBuffer());
+		_tcscpy(st_AVScreen.tszVideoSize, m_StrEditScreen.GetBuffer());
+		if (!AVCollect_Video_Init(&xhScreen, &st_AVScreen, XEngine_AVCollect_CBScreen, this))
 		{
 			AfxMessageBox(_T("初始化屏幕采集失败"));
 			return;
 		}
-		AVCollect_Screen_GetInfo(xhScreen, &nWidth, &nHeight, &nBitRate);
+		AVCollect_Video_GetInfo(xhScreen, &nWidth, &nHeight, &nBitRate);
 		if (m_StrEditRate.IsEmpty())
 		{
 			m_StrEditRate.Format(_T("%lld"), nBitRate);
@@ -381,7 +388,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 			_stprintf(tszVideoFile, _T("%s\\Video.h264"), tszFileDir);
 			pSt_VideoFile = _tfopen(tszVideoFile, _T("wb"));
 		}
-		AVCollect_Screen_Start(xhScreen);
+		AVCollect_Video_Start(xhScreen);
 
 		st_AVProtocol.st_PushVideo.bEnable = TRUE;
 		st_AVProtocol.st_PushVideo.enAvCodec = ENUM_ENTENGINE_AVCODEC_VEDIO_TYPE_H264;
@@ -430,7 +437,7 @@ void CXEngineRecordMasterDlg::OnBnClickedButton2()
 void CXEngineRecordMasterDlg::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	AVCollect_Screen_Destory(xhScreen);
+	AVCollect_Video_Destory(xhScreen);
 	AVCollect_Audio_Destory(xhSound);
 	VideoCodec_Stream_Destroy(xhVideo);
 	AudioCodec_Stream_Destroy(xhAudio);
