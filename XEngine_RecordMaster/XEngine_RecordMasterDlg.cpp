@@ -310,12 +310,12 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		if (BST_CHECKED == m_BtnCheckPush.GetCheck())
 		{
 			//推流需要的属性
-			st_AVProtocol.st_PushAudio.bEnable = TRUE;
-			st_AVProtocol.st_PushAudio.enAvCodec = ENUM_AVCODEC_AUDIO_TYPE_AAC;
-			st_AVProtocol.st_PushAudio.nBitRate = nBitRate;
-			st_AVProtocol.st_PushAudio.nChannel = nChannel;
-			st_AVProtocol.st_PushAudio.nSampleFmt = ENUM_AVCOLLECT_AUDIO_SAMPLE_FMT_FLTP;
-			st_AVProtocol.st_PushAudio.nSampleRate = nSmpRate;
+			st_AVProtocol.st_AudioInfo.bEnable = TRUE;
+			st_AVProtocol.st_AudioInfo.enAVCodec = ENUM_AVCODEC_AUDIO_TYPE_AAC;
+			st_AVProtocol.st_AudioInfo.nBitRate = nBitRate;
+			st_AVProtocol.st_AudioInfo.nChannel = nChannel;
+			st_AVProtocol.st_AudioInfo.nSampleFmt = ENUM_AVCOLLECT_AUDIO_SAMPLE_FMT_FLTP;
+			st_AVProtocol.st_AudioInfo.nSampleRate = nSmpRate;
 		}
 		//是否需要保存为文件
 		if (BST_CHECKED == m_BtnCheckSave.GetCheck())
@@ -390,12 +390,12 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		}
 		AVCollect_Video_Start(xhScreen);
 
-		st_AVProtocol.st_PushVideo.bEnable = TRUE;
-		st_AVProtocol.st_PushVideo.enAvCodec = ENUM_ENTENGINE_AVCODEC_VEDIO_TYPE_H264;
-		st_AVProtocol.st_PushVideo.nBitRate = nBitRate;
-		st_AVProtocol.st_PushVideo.nFrameRate = 24;
-		st_AVProtocol.st_PushVideo.nHeight = nHeight;
-		st_AVProtocol.st_PushVideo.nWidth = nWidth;
+		st_AVProtocol.st_VideoInfo.bEnable = TRUE;
+		st_AVProtocol.st_VideoInfo.enAVCodec = ENUM_ENTENGINE_AVCODEC_VEDIO_TYPE_H264;
+		st_AVProtocol.st_VideoInfo.nBitRate = nBitRate;
+		st_AVProtocol.st_VideoInfo.nFrameRate = 24;
+		st_AVProtocol.st_VideoInfo.nHeight = nHeight;
+		st_AVProtocol.st_VideoInfo.nWidth = nWidth;
 	}
 	//是否需要推流
 	if (bStreamPush)
