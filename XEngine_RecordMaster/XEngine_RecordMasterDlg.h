@@ -77,6 +77,6 @@ public:
 	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnBnClickedCheck2();
 	CButton m_BtnCheckSave;
-	XNETHANDLE xhStream;
+	XHANDLE xhStream;
 	CButton m_BtnCheckAudio;
 };

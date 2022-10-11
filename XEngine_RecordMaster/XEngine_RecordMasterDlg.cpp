@@ -400,7 +400,8 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	//是否需要推流
 	if (bStreamPush)
 	{
-		if (!XClient_StreamPush_Init(&xhStream, m_StrSMSUrl.GetBuffer(), &st_AVProtocol, "flv"))
+		xhStream = XClient_StreamPush_Init(m_StrSMSUrl.GetBuffer(), &st_AVProtocol, "flv");
+		if (NULL == xhStream)
 		{
 			AfxMessageBox(_T("推送初始化失败,无法继续"));
 			return;
