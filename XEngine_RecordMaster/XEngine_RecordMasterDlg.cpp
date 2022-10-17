@@ -122,8 +122,7 @@ HCURSOR CXEngineRecordMasterDlg::OnQueryDragIcon()
 void _stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBAudio(uint8_t* punStringAudio, int nVLen, LPVOID lParam)
 {
 	CXEngineRecordMasterDlg* pClass_This = (CXEngineRecordMasterDlg*)lParam;
-
-	if (pClass_This->bFileSave && pClass_This->m_ComboxAudioList.GetCurSel() > 0)
+	if (pClass_This->bFileSave)
 	{
 		int nListCount = 0;
 		AVCODEC_AUDIO_MSGBUFFER** ppSt_ListMsgBuffer;
@@ -284,7 +283,12 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 	if (m_ComboxAudioList.GetCurSel() >= 0)
 	{
 		//选择后才启用
+#if XENGINE_VERSION_BIT < 7420011001
 		if (!AVCollect_Audio_Init(&xhSound, m_StrComboAudio.GetBuffer(), XEngine_AVCollect_CBAudio, this))
+#else
+		xhSound = AVCollect_Audio_Init(m_StrComboAudio.GetBuffer(), XEngine_AVCollect_CBAudio, this);
+		if (NULL == xhSound)
+#endif
 		{
 			AfxMessageBox(_T("初始化音频采集器失败"));
 			return;
@@ -339,8 +343,15 @@ void CXEngineRecordMasterDlg::OnBnClickedButton1()
 		st_AVScreen.nFrameRate = _ttoi(m_StrEditFrame.GetBuffer());
 		st_AVScreen.nPosX = _ttoi(m_StrEditPosX.GetBuffer());
 		st_AVScreen.nPosY = _ttoi(m_StrEditPosY.GetBuffer());
-		_tcscpy(st_AVScreen.tszVideoSize, m_StrEditScreen.GetBuffer());
+		//_tcscpy(st_AVScreen.tszVideoSize, m_StrEditScreen.GetBuffer());
+		_tcscpy(st_AVScreen.tszVideoDev, "video=screen-capture-recorder");
+
+#if XENGINE_VERSION_BIT < 7420011001
 		if (!AVCollect_Video_Init(&xhScreen, &st_AVScreen, XEngine_AVCollect_CBScreen, this))
+#else
+		xhScreen = AVCollect_Video_Init(&st_AVScreen, XEngine_AVCollect_CBScreen, this);
+		if (NULL == xhScreen)
+#endif
 		{
 			AfxMessageBox(_T("初始化屏幕采集失败"));
 			return;

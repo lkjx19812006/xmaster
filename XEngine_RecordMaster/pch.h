@@ -38,7 +38,3 @@ using namespace std;
 #pragma comment(lib,"XEngine_AVCoder/XEngine_VideoCoder.lib")
 #pragma comment(lib,"XEngine_AVCoder/XEngine_AVHelp.lib")
 #pragma comment(lib,"XEngine_StreamMedia/StreamMedia_XClient.lib")
-
-#if XENGINE_VERSION_BIT < 7280001001
-#error Need XEngine V7.28.0.1001
-#endif

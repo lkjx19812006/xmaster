@@ -31,9 +31,16 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+#if XENGINE_VERSION_BIT < 7420011001
 	XNETHANDLE xhScreen;   //屏幕录制句柄
-	XNETHANDLE xhVideo;    //视频编码句柄
 	XNETHANDLE xhSound;    //声卡录制句柄
+#else
+	XHANDLE xhScreen;   //屏幕录制句柄
+	XHANDLE xhSound;    //声卡录制句柄
+#endif
+	
+	XNETHANDLE xhVideo;    //视频编码句柄
+	
 	XNETHANDLE xhAudio;    //音频编解码句柄
 	XNETHANDLE xhPacket;   //打包句柄
 	XNETHANDLE xhFilter;   //过滤器句柄
