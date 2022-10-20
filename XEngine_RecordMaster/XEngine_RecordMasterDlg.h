@@ -39,10 +39,9 @@ public:
 	XHANDLE xhSound;    //声卡录制句柄
 #endif
 	
+	XHANDLE xhPacket;   //打包句柄
 	XNETHANDLE xhVideo;    //视频编码句柄
-	
 	XNETHANDLE xhAudio;    //音频编解码句柄
-	XNETHANDLE xhPacket;   //打包句柄
 	XNETHANDLE xhFilter;   //过滤器句柄
 	FILE* pSt_VideoFile;   //视频保存地址
 	FILE* pSt_AudioFile;   //音频保存地址
@@ -59,7 +58,7 @@ public:
 	int nChannel;
 	static void __stdcall XEngine_AVCollect_CBAudio(uint8_t* punStringAudio, int nVLen, LPVOID lParam);
 	static void __stdcall XEngine_AVCollect_CBScreen(uint8_t* punStringY, int nYLen, uint8_t* punStringU, int nULen, uint8_t* punStringV, int nVLen, LPVOID lParam);
-	static void __stdcall XEngine_AVPacket_Callback(XNETHANDLE xhNet, int nCvtType, int nCvtFrame, double dlTime, LPVOID lParam);
+	static void __stdcall XEngine_AVPacket_Callback(XHANDLE xhNet, int nCvtType, int nCvtFrame, double dlTime, LPVOID lParam);
 	static DWORD WINAPI XEngine_AVPacket_Thread(LPVOID lParam);
 public:
 	afx_msg void OnBnClickedButton1();

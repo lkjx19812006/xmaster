@@ -189,7 +189,7 @@ void __stdcall CXEngineRecordMasterDlg::XEngine_AVCollect_CBScreen(uint8_t* punS
 		XClient_StreamPush_PushVideo(pClass_This->xhStream, punStringY, nYLen, punStringU, nULen, punStringV, nVLen);
 	}
 }
-void __stdcall CXEngineRecordMasterDlg::XEngine_AVPacket_Callback(XNETHANDLE xhNet, int nCvtType, int nCvtFrame, double dlTime, LPVOID lParam)
+void __stdcall CXEngineRecordMasterDlg::XEngine_AVPacket_Callback(XHANDLE xhNet, int nCvtType, int nCvtFrame, double dlTime, LPVOID lParam)
 {
 	CXEngineRecordMasterDlg* pClass_This = (CXEngineRecordMasterDlg*)lParam;
 	CString m_StrTipsType;
@@ -484,7 +484,8 @@ void CXEngineRecordMasterDlg::OnBnClickedButton5()
 			double dlVideoTime = 0;
 			double dlAudioTime = 0;
 			m_StaticTips.SetWindowText(_T("提示:正在打包..."));
-			if (!AVPacket_FilePacket_Init(&xhPacket, XEngine_AVPacket_Callback, this))
+			xhPacket = AVPacket_FilePacket_Init(XEngine_AVPacket_Callback, this);
+			if (NULL == xhPacket)
 			{
 				AfxMessageBox(_T("初始化打包工具失败"));
 				return;
